@@ -24,13 +24,16 @@ def threaded(c):
             print_lock.release()
             break
 
+        # Check balance
         if data == b'1':
             # send back balance to client
             print(balance)
             c.send(bytes(str(balance), 'utf8'))
+        # Withdraw
         if data == b'2':
             withdrawal = c.recv(1024)
             print("Withdraw: ", str(withdrawal, 'utf8'))
+            # Check if withdrawal amount is more than current balance.
             if int(withdrawal) < balance:
                 balance = balance - int(withdrawal)
                 print("New balance: ", balance)
@@ -38,9 +41,10 @@ def threaded(c):
             else:
                 print("Withdrawal amount larger then current balance.")
                 c.send(bytes("No", 'utf8'))
+        # Deposit
         if data == b'3':
             deposit = c.recv(1024)
-            print("Withdraw: ", str(deposit, 'utf8'))
+            print("Deposit: ", str(deposit, 'utf8'))
             balance = balance + int(deposit)
             print("New balance: ", balance)
             c.send(bytes(str(balance), 'utf8'))
@@ -51,9 +55,7 @@ def threaded(c):
 def Main():
     host = ""
 
-    # reverse a port on your computer
-    # in our case it is 12345 but it
-    # can be anything
+    # reserve a port on your computer
     port = 12345
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((host, port))
@@ -63,7 +65,7 @@ def Main():
     s.listen(5)
     print("socket is listening")
 
-    # a forever loop until client wants to exit
+    # loop until client exits
     while True:
         # establish connection with client
         c, addr = s.accept()

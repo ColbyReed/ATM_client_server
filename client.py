@@ -15,17 +15,19 @@ def Main():
     s.connect((host, port))
 
     while True:
-        # ask the client whether he wants to continue
+        # ask options
         ans = input('\nWhat would you like to do?'
                     '\n1: Check balance'
                     '\n2: Withdrawal'
                     '\n3: Deposit'
                     '\nq: End the current session\n: ')
+        # Check balance
         if ans == '1':
             s.send(ans.encode('ascii'))
             data = s.recv(1024)
             print('\nCurrent balance :', str(data, 'utf8'))
             continue
+        # Withdraw
         if ans == '2':
             s.send(ans.encode('ascii'))
             withdraw = input('\n How much to withdrawal? : ')
@@ -36,13 +38,15 @@ def Main():
             else:
                 print('\nBalance after withdrawal :', str(data, 'utf8'))
             continue
+        # Deposit
         if ans == '3':
             s.send(ans.encode('ascii'))
-            withdraw = input('\n How much to deposit? : ')
-            s.send(withdraw.encode('ascii'))
+            deposit = input('\n How much to deposit? : ')
+            s.send(deposit.encode('ascii'))
             data = s.recv(1024)
             print('\nBalance after withdrawal :', str(data, 'utf8'))
             continue
+        # Quits session
         if ans == 'q':
             print("\nEnding session")
             break
